@@ -6,6 +6,7 @@ esp.osdebug(0)
 from machine import Pin, SoftI2C, ADC
 from modules.anemometer import anemo
 from modules.bmp180 import BMP180
+from modules.vane import wind_vane
 from modules.esp_ap import APWebserver
 
 
@@ -15,11 +16,12 @@ def sensor_init() -> list:
     ADC (Anemometer) - Pin 1
     """
     i2c = SoftI2C(scl=Pin(4), sda=Pin(5), freq=400000)
-    adc = ADC(Pin(1))
-    a = anemo(adc)
+    adc1 = ADC(Pin(1))
+    adc2 = ADC(Pin(2))
+    a = anemo(adc1)
     b = BMP180(i2c)
-
-    return [a,b]
+    d = wind_vane(adc2)
+    return [a,b,d]
 
 def update_sensors(sensors: list) -> list:
     out = []
